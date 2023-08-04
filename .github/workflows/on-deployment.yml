@@ -8,4 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     name: Create PR
     steps:
-      - run: echo "Create PR"
+      - run: |
+          echo ${{ toJson(github.event.deployment) }}
