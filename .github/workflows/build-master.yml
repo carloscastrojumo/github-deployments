@@ -12,24 +12,17 @@ jobs:
     outputs:
       contains-deploy-label: ${{ steps.verify-labels.outputs.contains-deploy-label }}
     steps:
-      - name: Show context
-        run: |
-          echo "${{ toJson(github.event.pull_request) }}"
-
       - name: Verify labels
         id: verify-labels
         run: |
           labels=${{ toJson(github.event.pull_request.labels) }}
-          for label in $(echo $labels | jq -r '.[].name'); do
-            if [[ $label == "deploy-"* ]]; then
-              echo "Label $label found"
-              echo "contains-deploy-label=true" >> $GITHUB_OUTPUT
-              exit 0
-            else
-              echo "Labels not found"
-              echo "contains-deploy-label=false" >> $GITHUB_OUTPUT
-            fi
-          done
+          if [[ -n $(echo $labels | jq -c '.[] | select(.name | contains ("deploy-"))') ]]; then
+            echo "Found deploy label"
+            echo "contains-deploy-label=true" >> $GITHUB_OUTPUT
+          else
+            echo "Did not find deploy label"
+            echo "contains-deploy-label=false" >> $GITHUB_OUTPUT
+          fi
 
   create-release:
     needs: verify-labels
