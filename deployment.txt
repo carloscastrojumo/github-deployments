@@ -1,1 +1,1 @@
-Prepare deployment for dev with release version v1.0.17
+Prepare deployment for dev with release version v1.0.18
