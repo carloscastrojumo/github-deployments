@@ -2,7 +2,7 @@ name: Create Deployment
 
 on:
   release:
-    types: [published]
+    types: [created]
 
 jobs:
   create-deployment:
