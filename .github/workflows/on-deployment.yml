@@ -6,7 +6,7 @@ on:
 jobs:
   create-pr:
     runs-on: ubuntu-latest
-    name: Create PR
+    name: Print Deployment Event Data
     steps:
       - run: |
-          echo ${{ toJson(github.event.deployment) }}
+          echo "${{ toJson(github.event.deployment) }}"
