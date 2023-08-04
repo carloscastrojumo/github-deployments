@@ -32,11 +32,11 @@ jobs:
     needs: verify-labels
     runs-on: ubuntu-latest
     if: needs.verify-labels.outputs.contains-deploy-label == 'false'
-    env:
-      GH_TOKEN: ${{ secrets.PAT }}
     steps:
       - name: Checkout
         uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 #v3.5.0
+        with:
+          token: ${{ secrets.PAT }}
 
       - name: Get next version
         id: get-next-version
