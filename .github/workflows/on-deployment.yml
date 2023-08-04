@@ -4,9 +4,42 @@ on:
   deployment
 
 jobs:
-  create-pr:
+  create-pr-staging:
     runs-on: ubuntu-latest
-    name: Print Deployment Event Data
+    name: Create PR for staging environment
+    if: github.event.deployment.environment.name == 'dev'
     steps:
-      - run: |
-          echo "${{ toJson(github.event.deployment) }}"
+      - name: Checkout
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 #v3.5.0
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 #v5.0.2
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: Prepare deployment for staging
+          branch: prepare-deployment-for-staging
+          title: '[Deploy staging] Prepare deployment for staging'
+          body: |
+            Prepare deployment for staging with release version ${{ github.event.deployment.ref }}
+          labels: |
+            deploy-staging
+
+  create-pr-production:
+    runs-on: ubuntu-latest
+    name: Create PR for production environment
+    if: github.event.deployment.environment.name == 'staging'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 #v3.5.0
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 #v5.0.2
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: Prepare deployment for production
+          branch: prepare-deployment-for-production
+          title: '[Deploy production] Prepare deployment for production'
+          body: |
+            Prepare deployment for production with release version ${{ github.event.deployment.ref }}
+          labels: |
+            deploy-production
