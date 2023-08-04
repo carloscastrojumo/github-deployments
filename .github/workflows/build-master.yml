@@ -40,7 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gh tag create v1.0.0
           gh release create \
-            --title "Release ${{ github.event.pull_request.head.sha }}" \
-            --notes "Release ${{ github.event.pull_request.head.sha }}" \
-            --target ${{ github.event.pull_request.head.sha }}
+            --generate-notes \
+

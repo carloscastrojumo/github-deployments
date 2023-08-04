@@ -11,3 +11,5 @@ git add .
 git commit -m "PR $num"
 git push origin pr-$num
 gh pr create --fill
+git co main
+git pull origin main
