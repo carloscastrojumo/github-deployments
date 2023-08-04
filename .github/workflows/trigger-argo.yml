@@ -15,13 +15,11 @@ jobs:
       - name: Verify labels
         id: verify-labels
         run: |
-          labels=${{ toJson(github.event.pull_request.labels) }}
-          if [[ -n $(echo $labels | jq -c '.[] | select(.name | contains ("deploy-"))') ]]; then
+          labels='${{ toJson(github.event.pull_request.labels) }}'
+          if [[ -n $(echo $labels | jq -c '.[] | select(.name | contains ("deploy-")) | .name') ]]; then
             echo "Found deploy label"
-            echo "contains-deploy-label=true" >> $GITHUB_OUTPUT
           else
             echo "Did not find deploy label"
-            echo "contains-deploy-label=false" >> $GITHUB_OUTPUT
           fi
 
   doing-something:
