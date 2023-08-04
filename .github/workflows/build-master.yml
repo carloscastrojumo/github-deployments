@@ -45,13 +45,16 @@ jobs:
           current_tag=$(git tag -l --sort=-v:refname | head -n 1)
           echo "next_version=$(echo $current_tag | awk -F. -v OFS=. '{$NF = $NF + 1;} 1')" >> $GITHUB_OUTPUT
 
-      - name: Create release
+      - name: Create tag
         run: |
           git config --local user.email "carlos.castro@jumo.world"
           git config --local user.name "Carlos Castro"
-          git tag -a ${{ steps.get-next-version.outputs.next_version }} -m "Release ${{ steps.get-next-version.outputs.next_version }}"
+          git tag ${{ steps.get-next-version.outputs.next_version }}
           git push origin ${{ steps.get-next-version.outputs.next_version }}
-          gh auth status
-          gh release create ${{ steps.get-next-version.outputs.next_version }} \
-            --generate-notes \
 
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get-next-version.outputs.next_version }}
+          generate_release_notes: true
+          token: ${{ secrets.PAT }}
