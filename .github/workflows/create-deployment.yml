@@ -1,0 +1,13 @@
+name: Create Deployment
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  create-deployment:
+    runs-on: ubuntu-latest
+    name: Create Deployment
+    environment: dev
+    steps:
+      - run: echo "Create Deployment"

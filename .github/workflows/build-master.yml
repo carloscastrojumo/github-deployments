@@ -1,0 +1,46 @@
+name: Build and Release
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: ["closed"]
+
+jobs:
+  verify-labels:
+    runs-on: ubuntu-latest
+    outputs:
+      contains-deploy-label: ${{ steps.verify-labels.outputs.contains-deploy-label }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 #v3.5.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Verify labels
+        id: verify-labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ -n $(gh pr view --json labels --jq '.labels[].name | select(startswith("deploy-"))') ]]; then
+            echo "contains-deploy-label=true" >> $GITHUB_OUTPUT
+          else
+            echo "contains-deploy-label=false" >> $GITHUB_OUTPUT
+          fi
+
+  create-release:
+    needs: verify-labels
+    runs-on: ubuntu-latest
+    if: needs.verify-labels.outputs.contains-deploy-label == 'false'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 #v3.5.0
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create \
+            --title "Release ${{ github.event.pull_request.head.sha }}" \
+            --notes "Release ${{ github.event.pull_request.head.sha }}" \
+            --target ${{ github.event.pull_request.head.sha }}

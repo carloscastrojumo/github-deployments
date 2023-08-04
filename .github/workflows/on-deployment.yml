@@ -1,0 +1,11 @@
+name: On Deployment
+
+on:
+  deployment
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    name: Create PR
+    steps:
+      - run: echo "Create PR"
