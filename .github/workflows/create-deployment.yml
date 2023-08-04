@@ -14,6 +14,10 @@ jobs:
         with:
           ref: main
 
+      - name: Prepare deployment for dev
+        run: |
+          echo "Prepare deployment for dev with release version ${{ github.event.release.tag_name }}" > deployment.txt
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 #v5.0.2
         with:
