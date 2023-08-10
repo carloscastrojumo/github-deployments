@@ -15,4 +15,4 @@ jobs:
           token: ${{ secrets.PAT }}
           merge-method: rebase
           required-labels: automerge
-          dry-run: true
+          dry-run: false
