@@ -4,10 +4,9 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - closed
+    types: [closed]
     paths:
-      - '**.txt'
+      - 'deployment.txt'
 
 jobs:
   doing-something:
