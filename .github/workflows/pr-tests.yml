@@ -1,34 +1,17 @@
-name: PR Tests
+name: Test PR closed
 
 on:
   pull_request:
     branches:
       - main
-    types: [opened, synchronize, reopened]
+    types:
+      - closed
+    paths:
+      - '*.txt'
 
 jobs:
-  verify-labels:
-    runs-on: ubuntu-latest
-    outputs:
-      contains-deploy-label: ${{ steps.verify-labels.outputs.contains-deploy-label }}
-    steps:
-      - name: Verify labels
-        id: verify-labels
-        run: |
-          echo "${{ toJson(github.event.pull_request) }}"
-          labels='${{ toJson(github.event.pull_request.labels) }}'
-          if [[ -n $(echo $labels | jq -c '.[] | select(.name | contains ("deploy-")) | .name') ]]; then
-            echo "Found deploy label"
-            echo "contains-deploy-label=true" >> $GITHUB_OUTPUT
-          else
-            echo "Did not find deploy label"
-            echo "contains-deploy-label=false" >> $GITHUB_OUTPUT
-          fi
-
   doing-something:
-    needs: verify-labels
     runs-on: ubuntu-latest
-    if: needs.verify-labels.outputs.contains-deploy-label == 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 #v3.5.0
